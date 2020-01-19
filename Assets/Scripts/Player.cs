@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
     private float currAnimTime;
     private bool parryStarted = false;
     private bool pulsing = false;
+    private Camera cam;
 
     private bool mouseDown = false;
 
@@ -54,6 +55,7 @@ public class Player : MonoBehaviour
         anim = this.GetComponent<Animation>();
         spriteRend = GetComponentInChildren<SpriteRenderer>();
         startColor = spriteRend.color;
+        cam = Camera.main;
         Current = this;
     }
 
@@ -70,24 +72,21 @@ public class Player : MonoBehaviour
                     touchStartTime = Time.time;
                     break;
 
+                case TouchPhase.Moved:
+                case TouchPhase.Stationary:
+                    if (Time.time - touchStartTime > durationForSuperParry && !Pulsing)
+                    {
+                        Pulsing = true;
+                    }
+                    break;
+
                 case TouchPhase.Ended:
                     if (!isParrying)
                     {
                         isParrying = true;
                         touchEndPosition = touch.position;
                         swipeDirection = (touchEndPosition - touchStartPosition).normalized;
-
-
-                        if (Time.time - touchStartTime > durationForSuperParry)
-                        {
-                            superParry = true;
-                            Debug.Log("Super Parry!");
-                        }
-                        else
-                        {
-                            Debug.Log("Parry!");
-                        }
-
+                        CheckForSuperParry();
                         StartCoroutine("Parry");
                     }
                     break;
@@ -114,22 +113,27 @@ public class Player : MonoBehaviour
             //Same as TouchPhase.Ended, but start is the center of the object
             mouseDown = false;
             touchStartPosition = transform.position;
-            touchEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            touchEndPosition = cam.ScreenToWorldPoint(Input.mousePosition);
             swipeDirection = (touchEndPosition - touchStartPosition).normalized;
-            if (Time.time - touchStartTime > durationForSuperParry)
-            {
-                Pulsing = false;
-                superParry = true;
-            }
+            CheckForSuperParry();
             StartCoroutine("Parry");
         }
     }
 
+    void CheckForSuperParry()
+    {
+        if (Time.time - touchStartTime > durationForSuperParry)
+        {
+            Pulsing = false;
+            superParry = true;
+        }
+    }
 
     IEnumerator Parry()
     {
         if (!superParry)
         {
+            Debug.Log("Parry!");
             SetAnimCurves();
             startAnimTime = Time.time;
             Vector3 tempPos;
@@ -146,17 +150,14 @@ public class Player : MonoBehaviour
         }
         else
         {
-            
+            Debug.Log("Super Parry!");
             this.anim.Play();
             while (this.anim.isPlaying)
-                yield return new WaitForEndOfFrame();
-            
+                yield return new WaitForEndOfFrame();     
         }
 
         isParrying = false;
         superParry = false;
-  
-        yield return null;
     }
 
     IEnumerator Pulse()
@@ -169,7 +170,6 @@ public class Player : MonoBehaviour
             spriteRend.color = Color.Lerp(startColor, new Color(1f, .8f, .2f), o);
             yield return new WaitForEndOfFrame();
         }
-
     }
 
     void SetAnimCurves()
