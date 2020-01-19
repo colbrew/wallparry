@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
 			//Same as TouchPhase.Ended, but start is the center of the object
             mouseDown = true;
