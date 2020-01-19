@@ -14,35 +14,42 @@ public class Challenge : MonoBehaviour
 		Failed
 	}
 
-	public float startupDelay = 0.5f;
+	public enum Difficulty
+	{
+		Easy,
+		Medium,
+		Hard,
+	}
+
+
 	public float duration = 1.0f;
 
 	public float hitWindowMin = 0.75f;
 	public float hitWindowMax = 0.9f;
 
+	public Difficulty difficulty;
+
+	public float fadeOutTime = 0.25f;
+
+
 	private Animation anim;
 	private float startTime;
 
 	private State currState;
-	
 
-	private IEnumerator Start()
+	private void Awake()
 	{
 		currState = State.Playing;
-		startTime = -1.0f;
-		anim = this.GetComponent<Animation>();
-		anim.Stop();
-		
+		anim = this.GetComponent<Animation>();		
 		foreach (AnimationState state in anim)
 		{
 			state.speed =  state.length / duration;
 		}
 
-		yield return new WaitForSeconds(startupDelay);
-
 		startTime = Time.time;
 		anim.Play();
 
+		GameObject.Destroy(this.gameObject, duration + fadeOutTime);
 	}
 
 	private void Update()
@@ -51,20 +58,32 @@ public class Challenge : MonoBehaviour
 		{
 			float timePassed = Time.time - startTime;
 
-			bool isParrying = Player.Current.IsParrying;
-
-			if(isParrying)
-				Debug.Log("PARRY AT: " + timePassed.ToString());
-
-			if (isParrying && hitWindowMin <= timePassed && timePassed <= hitWindowMax )
+			if (timePassed >= duration)
 			{
-				
-				currState = State.Success;
-				foreach (AnimationState state in anim)
+				currState = State.Failed;
+			}
+			else
+			{
+				bool isParrying = Player.Current.IsParrying;
+
+				if (isParrying)
+					Debug.Log("PARRY AT: " + timePassed.ToString());
+
+				if (isParrying && hitWindowMin <= timePassed && timePassed <= hitWindowMax)
 				{
-					state.speed *= -1.0f;
+
+					currState = State.Success;
+					foreach (AnimationState state in anim)
+					{
+						state.speed *= -1.0f;
+					}
 				}
-			}	
+			}
+		}
+
+		if (currState == State.Failed)
+		{
+
 		}
 	}
 
