@@ -10,6 +10,7 @@ public class Challenge : MonoBehaviour
 	public enum State
 	{
 		Playing,
+		Parrying,
 		Success,
 		Failed
 	}
@@ -22,28 +23,29 @@ public class Challenge : MonoBehaviour
 	}
 
 
-	public float duration = 1.0f;
+	// for calculating if your swipe was accurate enough to parry
+    // an exactly correct swipe would be -1f, we want something between -1f (very hard/impossible) to -.75f (swipe in general right direciton)
+	const float SWIPEACCRUACYLIMIT = -.87f; 
 
+	public float duration = 1.0f;
 	public float hitWindowMin = 0.75f;
 	public float hitWindowMax = 0.9f;
-
 	public Difficulty difficulty;
-
 	public float fadeOutTime = 0.25f;
-
+    [Tooltip("Enter Vector for direction Challenge is moving i.e. (1,-1)")]
+	public Vector2 moveDirection;
 
 	private Animation anim;
 	private float startTime;
-
 	private State currState;
 
 	private void Awake()
 	{
 		currState = State.Playing;
-		anim = this.GetComponent<Animation>();		
+		anim = this.GetComponent<Animation>();
 		foreach (AnimationState state in anim)
 		{
-			state.speed =  state.length / duration;
+			state.speed = state.length / duration;
 		}
 
 		startTime = Time.time;
@@ -51,6 +53,7 @@ public class Challenge : MonoBehaviour
 
 		GameObject.Destroy(this.gameObject, duration + fadeOutTime);
 	}
+
 
 	private void Update()
 	{
@@ -66,25 +69,33 @@ public class Challenge : MonoBehaviour
 			{
 				bool isParrying = Player.Current.IsParrying;
 
+
 				if (isParrying)
-					Debug.Log("PARRY AT: " + timePassed.ToString());
-
-				if (isParrying && hitWindowMin <= timePassed && timePassed <= hitWindowMax)
 				{
-
-					currState = State.Success;
-					foreach (AnimationState state in anim)
+					currState = State.Parrying;
+					if (hitWindowMin <= timePassed && timePassed <= hitWindowMax)
 					{
-						state.speed *= -1.0f;
+						if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) <= SWIPEACCRUACYLIMIT)
+						{
+							currState = State.Success;
+							foreach (AnimationState state in anim)
+							{
+								state.speed *= -1.0f;
+							}
+							Debug.Log("PARRY AT: " + timePassed.ToString());
+						}
+						else
+						{
+							Debug.Log("Parry was off target!");
+							currState = State.Failed;
+						}
+					}
+					else
+					{
+						currState = State.Failed;
 					}
 				}
 			}
 		}
-
-		if (currState == State.Failed)
-		{
-
-		}
 	}
-
 }
