@@ -63,7 +63,8 @@ public class Player : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
-			//Same as TouchPhase.Ended, but start is the center of the object
+            //Same as TouchPhase.Ended, but start is the center of the object
+            touchStartTime = Time.time;
             mouseDown = true;
             touchStartPosition = transform.position;
 			touchEndPosition = Input.mousePosition;
@@ -92,7 +93,9 @@ public class Player : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-		isParrying = false;
+        transform.up = new Vector3(0, 1, 0);
+
+        isParrying = false;
 		superParry = false;
 	}
 }
