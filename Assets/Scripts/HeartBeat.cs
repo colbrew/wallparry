@@ -12,7 +12,6 @@ public class HeartBeat : MonoBehaviour
 
     void Start()
     {
-        
     }
 
     void Update()
