@@ -6,32 +6,34 @@ public class Player : MonoBehaviour
     // SuperParry is touch and hold
 	public float durationForSuperParry = 2f;
 
-	public static Player Current { get; private set; }
+    public static Player Current { get; private set; }
     public bool IsParrying { get => isParrying; }
     public Vector2 SwipeDirection { get => swipeDirection; }
     public bool SuperParry { get => superParry; }
 
     private Animation anim;
 
-	private bool isParrying = false;
-	private Vector2 touchStartPosition;
-	private Vector2 touchEndPosition;
-	private float touchStartTime;
-	private float touchduration;
-	private Vector2 swipeDirection;
-	private bool superParry = false;
+    private bool isParrying = false;
+    private Vector2 touchStartPosition;
+    private Vector2 touchEndPosition;
+    private float touchStartTime;
+    private float touchduration;
+    private Vector2 swipeDirection;
+    private bool superParry = false;
 
-	private void Awake()
-	{
-		anim = this.GetComponent<Animation>();
-		Current = this;
-	}
+    private bool mouseDown = false;
 
-	private void Update()
-	{	
-        if(Input.touchCount > 0)
+    private void Awake()
+    {
+        anim = this.GetComponent<Animation>();
+        Current = this;
+    }
+
+    private void Update()
+    {
+        if (Input.touchCount > 0)
         {
-			Touch touch = Input.GetTouch(0);
+            Touch touch = Input.GetTouch(0);
 
             switch (touch.phase)
             {
@@ -40,9 +42,10 @@ public class Player : MonoBehaviour
 					touchStartTime = Time.time;
 					break;
 
-				case TouchPhase.Ended:
-					touchEndPosition = touch.position;
+                case TouchPhase.Ended:
+                    touchEndPosition = touch.position;
                     swipeDirection = (touchEndPosition - touchStartPosition).normalized;
+
 					isParrying = true;
 					if (Time.time - touchStartTime > durationForSuperParry)
 					{
@@ -57,7 +60,20 @@ public class Player : MonoBehaviour
 					break;
             }
         }
-	}
+
+        if (Input.GetMouseButtonDown(0))
+        {
+			//Same as TouchPhase.Ended, but start is the center of the object
+            mouseDown = true;
+            touchStartPosition = transform.position;
+			touchEndPosition = Input.mousePosition;
+			swipeDirection = (touchEndPosition - touchStartPosition).normalized;
+            isParrying = true;
+            if (Time.time - touchStartTime > durationForSuperParry)
+                superParry = true;
+            StartCoroutine("Parry");
+        }
+    }
 
     IEnumerator Parry()
     {
@@ -71,9 +87,9 @@ public class Player : MonoBehaviour
 			}
 		}
 
-		while (this.anim.isPlaying)
+        while (this.anim.isPlaying)
         {
-			yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
         }
 
 		isParrying = false;
