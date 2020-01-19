@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -305,7 +305,7 @@ GameObject:
   - component: {fileID: 1011047551}
   - component: {fileID: 1011047550}
   m_Layer: 0
-  m_Name: LevelInfinte
+  m_Name: LevelInfinite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -472,6 +472,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 712835035, guid: dafc8e0cedae1488bab4900de92af2d9, type: 3}
+      propertyPath: m_PlayAutomatically
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5623685124877311807, guid: dafc8e0cedae1488bab4900de92af2d9,
         type: 3}
       propertyPath: m_LocalPosition.x

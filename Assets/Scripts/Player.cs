@@ -4,7 +4,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     // SuperParry is touch and hold
-	public float durationForSuperParry = 1f;
+	public float durationForSuperParry = 2f;
 
 	public static Player Current { get; private set; }
     public bool IsParrying { get => isParrying; }
@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
             {
 				case TouchPhase.Began:
 					touchStartPosition = touch.position;
+					touchStartTime = Time.time;
 					break;
 
 				case TouchPhase.Ended:
@@ -44,7 +45,14 @@ public class Player : MonoBehaviour
                     swipeDirection = (touchEndPosition - touchStartPosition).normalized;
 					isParrying = true;
 					if (Time.time - touchStartTime > durationForSuperParry)
+					{
 						superParry = true;
+						Debug.Log("Super Parry!");
+					}
+					else
+                    {
+						Debug.Log("Parry!");
+                    }
 					StartCoroutine("Parry");
 					break;
             }
@@ -55,8 +63,12 @@ public class Player : MonoBehaviour
     {
 		if (!this.anim.IsPlaying("parry"))
 		{
-			Debug.Log("PARRY");
-			this.anim.Play();
+			
+			if (!superParry)
+			{
+				transform.up = new Vector3(swipeDirection.x, swipeDirection.y, 0);
+				this.anim.Play();
+			}
 		}
 
 		while (this.anim.isPlaying)
@@ -65,5 +77,6 @@ public class Player : MonoBehaviour
         }
 
 		isParrying = false;
+		superParry = false;
 	}
 }
