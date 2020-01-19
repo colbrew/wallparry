@@ -5,10 +5,30 @@ public class Player : MonoBehaviour
 {
     const float CURVEDURATION = .4f;
 
+    public static Player Current { get; private set; }
+
     // SuperParry is touch and hold
     public float durationForSuperParry = 2f;
 
-    public static Player Current { get; private set; }
+    private Animation anim;
+    private SpriteRenderer spriteRend;
+    private Color startColor;
+
+    private bool isParrying = false;
+    private Vector2 touchStartPosition;
+    private Vector2 touchEndPosition;
+    private float touchStartTime;
+    private float touchduration;
+    private Vector2 swipeDirection;
+    private bool superParry = false;
+    private AnimationCurve xCurve;
+    private AnimationCurve yCurve;
+    private float startAnimTime;
+    private float currAnimTime;
+    private bool pulsing = false;
+    private Camera cam;
+    
+    // Properties
     public bool IsParrying { get => isParrying; }
     public Vector2 SwipeDirection { get => swipeDirection; }
     public bool SuperParry { get => superParry; }
@@ -28,28 +48,6 @@ public class Player : MonoBehaviour
         }
     }
 
-
-    private Animation anim;
-    private SpriteRenderer spriteRend;
-    private Color startColor;
-
-    private bool isParrying = false;
-    private Vector2 touchStartPosition;
-    private Vector2 touchEndPosition;
-    private float touchStartTime;
-    private float touchduration;
-    private Vector2 swipeDirection;
-    private bool superParry = false;
-    private AnimationCurve xCurve;
-    private AnimationCurve yCurve;
-    private float startAnimTime;
-    private float currAnimTime;
-    private bool parryStarted = false;
-    private bool pulsing = false;
-    private Camera cam;
-
-    private bool mouseDown = false;
-
     private void Awake()
     {
         anim = this.GetComponent<Animation>();
@@ -60,6 +58,17 @@ public class Player : MonoBehaviour
     }
 
     private void Update()
+    {
+#if UNITY_IOS || UNITY_ANDROID
+        CheckForTouchInput();
+#endif
+
+#if UNITY_EDITOR || UNITY_STANDALONE
+        CheckForMouseInput();
+#endif
+    }
+
+    void CheckForTouchInput()
     {
         if (Input.touchCount > 0)
         {
@@ -92,16 +101,18 @@ public class Player : MonoBehaviour
                     break;
             }
         }
+    }
 
+    void CheckForMouseInput()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             touchStartTime = Time.time;
-            mouseDown = true;
         }
 
-        if(Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
-            if(Time.time - touchStartTime > durationForSuperParry && !Pulsing)
+            if (Time.time - touchStartTime > durationForSuperParry && !Pulsing)
             {
                 Pulsing = true;
             }
@@ -111,7 +122,6 @@ public class Player : MonoBehaviour
         {
             isParrying = true;
             //Same as TouchPhase.Ended, but start is the center of the object
-            mouseDown = false;
             touchStartPosition = transform.position;
             touchEndPosition = cam.ScreenToWorldPoint(Input.mousePosition);
             swipeDirection = (touchEndPosition - touchStartPosition).normalized;
@@ -186,7 +196,5 @@ public class Player : MonoBehaviour
         keys[1] = new Keyframe(.2f, swipeDirection.y);
         keys[2] = new Keyframe(CURVEDURATION, 0.0f);
         yCurve = new AnimationCurve(keys);
-
-        Debug.Log("Anim curves set");
     }
 }
