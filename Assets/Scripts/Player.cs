@@ -12,8 +12,26 @@ public class Player : MonoBehaviour
     public bool IsParrying { get => isParrying; }
     public Vector2 SwipeDirection { get => swipeDirection; }
     public bool SuperParry { get => superParry; }
+    private bool Pulsing {
+        get => pulsing;
+        set
+        {
+            pulsing = value;
+            if (pulsing)
+            {
+                StartCoroutine("Pulse");
+            }
+            else
+            {
+                spriteRend.color = startColor;
+            }
+        }
+    }
+
 
     private Animation anim;
+    private SpriteRenderer spriteRend;
+    private Color startColor;
 
     private bool isParrying = false;
     private Vector2 touchStartPosition;
@@ -27,12 +45,15 @@ public class Player : MonoBehaviour
     private float startAnimTime;
     private float currAnimTime;
     private bool parryStarted = false;
+    private bool pulsing = false;
 
     private bool mouseDown = false;
 
     private void Awake()
     {
         anim = this.GetComponent<Animation>();
+        spriteRend = GetComponentInChildren<SpriteRenderer>();
+        startColor = spriteRend.color;
         Current = this;
     }
 
@@ -79,19 +100,31 @@ public class Player : MonoBehaviour
             mouseDown = true;
         }
 
+        if(Input.GetMouseButton(0))
+        {
+            if(Time.time - touchStartTime > durationForSuperParry && !Pulsing)
+            {
+                Pulsing = true;
+            }
+        }
+
         if (Input.GetMouseButtonUp(0) && !isParrying)
         {
+            isParrying = true;
             //Same as TouchPhase.Ended, but start is the center of the object
             mouseDown = false;
             touchStartPosition = transform.position;
             touchEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             swipeDirection = (touchEndPosition - touchStartPosition).normalized;
-            isParrying = true;
             if (Time.time - touchStartTime > durationForSuperParry)
+            {
+                Pulsing = false;
                 superParry = true;
+            }
             StartCoroutine("Parry");
         }
     }
+
 
     IEnumerator Parry()
     {
@@ -113,15 +146,30 @@ public class Player : MonoBehaviour
         }
         else
         {
+            
             this.anim.Play();
             while (this.anim.isPlaying)
                 yield return new WaitForEndOfFrame();
+            
         }
 
         isParrying = false;
         superParry = false;
   
         yield return null;
+    }
+
+    IEnumerator Pulse()
+    {
+        float pulsingStart = Time.time;
+        Debug.Log("Ready for super parry");
+        while (Pulsing)
+        {
+            float o = Mathf.PingPong(Time.time - pulsingStart, 1);
+            spriteRend.color = Color.Lerp(startColor, new Color(1f, .8f, .2f), o);
+            yield return new WaitForEndOfFrame();
+        }
+
     }
 
     void SetAnimCurves()
