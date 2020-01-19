@@ -23,22 +23,21 @@ public class Challenge : MonoBehaviour
 	}
 
 
-	public float duration = 1.0f;
+	// for calculating if your swipe was accurate enough to parry
+    // an exactly correct swipe would be -1f, we want something between -1f (very hard/impossible) to -.75f (swipe in general right direciton)
+	const float SWIPEACCRUACYLIMIT = -.87f; 
 
+	public float duration = 1.0f;
 	public float hitWindowMin = 0.75f;
 	public float hitWindowMax = 0.9f;
-
 	public Difficulty difficulty;
-
 	public float fadeOutTime = 0.25f;
-
+    [Tooltip("Enter Vector for direction Challenge is moving i.e. (1,-1)")]
+	public Vector2 moveDirection;
 
 	private Animation anim;
 	private float startTime;
-
 	private State currState;
-
-	private Vector2 moveDirection = new Vector2(-1, -1);
 
 	private void Awake()
 	{
@@ -76,7 +75,7 @@ public class Challenge : MonoBehaviour
 					currState = State.Parrying;
 					if (hitWindowMin <= timePassed && timePassed <= hitWindowMax)
 					{
-						if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) < -.94f)
+						if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) <= SWIPEACCRUACYLIMIT)
 						{
 							currState = State.Success;
 							foreach (AnimationState state in anim)
