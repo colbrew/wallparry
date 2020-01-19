@@ -86,7 +86,7 @@ public class Player : MonoBehaviour
                 case TouchPhase.Stationary:
                     if (!Pulsing)
                     {
-                        CheckForSuperParry();
+                        CheckForSuperParryReady();
                     }
                     break;
 
@@ -115,7 +115,7 @@ public class Player : MonoBehaviour
         {
             if (!Pulsing)
             {
-                CheckForSuperParry();
+                CheckForSuperParryReady();
             }
         }
 
@@ -131,19 +131,22 @@ public class Player : MonoBehaviour
         }
     }
 
-    void CheckForSuperParry()
+    bool CheckForSuperParryReady()
     {
         if (Time.time - touchStartTime > durationForSuperParry)
         {
             Pulsing = true;
-            superParry = true;
+            return true;
         }
+
+        return false;
     }
 
     IEnumerator Parry()
     {
-        if (superParry)
+        if (CheckForSuperParryReady())
         {
+            superParry = true;
             Pulsing = false;
             Debug.Log("Super Parry!");
             this.anim.Play();
