@@ -75,7 +75,7 @@ public class Challenge : MonoBehaviour
 					currState = State.Parrying;
 					if (hitWindowMin <= timePassed && timePassed <= hitWindowMax)
 					{
-						if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) <= SWIPEACCRUACYLIMIT)
+						if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) <= SWIPEACCRUACYLIMIT || Player.Current.SuperParry)
 						{
 							currState = State.Success;
 							foreach (AnimationState state in anim)

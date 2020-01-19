@@ -77,7 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 1
-  hitWindowMin: 0.75
+  hitWindowMin: 0.5
   hitWindowMax: 1
   difficulty: 0
   fadeOutTime: 0.25
