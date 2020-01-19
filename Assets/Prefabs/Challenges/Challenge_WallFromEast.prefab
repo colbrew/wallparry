@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 1404352559615198588}
   - component: {fileID: 1404352559615198589}
   m_Layer: 0
-  m_Name: Challenge_01
+  m_Name: Challenge_WallFromEast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,9 +77,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 1
-  hitWindowMin: 0.75
+  hitWindowMin: 0.5
   hitWindowMax: 1
   difficulty: 0
+  fadeOutTime: 0.25
+  moveDirection: {x: 1, y: 0}
 --- !u!111 &1404352559615198589
 Animation:
   m_ObjectHideFlags: 0

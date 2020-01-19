@@ -77,9 +77,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 1
-  hitWindowMin: 0.75
+  hitWindowMin: 0.5
   hitWindowMax: 1
   difficulty: 0
+  fadeOutTime: 0.25
+  moveDirection: {x: 1, y: -1}
 --- !u!111 &1404352559615198589
 Animation:
   m_ObjectHideFlags: 0
