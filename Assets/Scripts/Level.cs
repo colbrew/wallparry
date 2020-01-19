@@ -44,7 +44,8 @@ public class Level : MonoBehaviour
 	void Awake()
     {
 		Current = this;
-		heartBeat.SetAnimationTime(bpm);
+		if(heartBeat != null)
+			heartBeat.SetAnimationTime(bpm);
 		difficultyLevels.Sort((a, b) => b.timePassed.CompareTo(a.timePassed));
 		foreach (var c in challenges)
 		{
@@ -80,7 +81,8 @@ public class Level : MonoBehaviour
 			float timePassed = Time.time - startTime;
 			int eightNote = Mathf.FloorToInt(timePassed / ((60.0f / bpm) / 8.0f) );
 			beatDebugger.gameObject.SetActive(eightNote % 8 == 0);
-			if(eightNote % 8 == 0)heartBeat.AnimateBeat();
+			if(eightNote % 8 == 0 && heartBeat != null)
+				heartBeat.AnimateBeat();
 			if (eightNote != previousEightNote)
 			{
 				previousEightNote = eightNote;
