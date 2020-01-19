@@ -10,6 +10,7 @@ public class Challenge : MonoBehaviour
 	public enum State
 	{
 		Playing,
+        Parrying,
 		Success,
 		Failed
 	}
@@ -24,9 +25,15 @@ public class Challenge : MonoBehaviour
 	private float startTime;
 
 	private State currState;
-	
+	private Vector2 moveDirection = new Vector2(-1, -1);
 
-	private IEnumerator Start()
+
+    private void Start()
+    {
+		StartCoroutine("StartAnim");
+    }
+
+    private IEnumerator StartAnim()
 	{
 		currState = State.Playing;
 		startTime = -1.0f;
@@ -45,6 +52,7 @@ public class Challenge : MonoBehaviour
 
 	}
 
+
 	private void Update()
 	{
 		if (startTime > 0 && currState == State.Playing)
@@ -53,18 +61,31 @@ public class Challenge : MonoBehaviour
 
 			bool isParrying = Player.Current.IsParrying;
 
-			if(isParrying)
-				Debug.Log("PARRY AT: " + timePassed.ToString());
-
-			if (isParrying && hitWindowMin <= timePassed && timePassed <= hitWindowMax )
+			if (isParrying)
 			{
-				
-				currState = State.Success;
-				foreach (AnimationState state in anim)
+				currState = State.Parrying;
+				if (hitWindowMin <= timePassed && timePassed <= hitWindowMax)
 				{
-					state.speed *= -1.0f;
+					if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) < -.94f)
+					{
+						currState = State.Success;
+						foreach (AnimationState state in anim)
+						{
+							state.speed *= -1.0f;
+						}
+						Debug.Log("PARRY AT: " + timePassed.ToString());
+					}
+                    else
+                    {
+						Debug.Log("Parry was off target!");
+						currState = State.Failed;
+                    }
 				}
-			}	
+                else
+                {
+					currState = State.Failed;
+                }
+			}   
 		}
 	}
 

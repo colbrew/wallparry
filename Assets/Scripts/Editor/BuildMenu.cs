@@ -6,11 +6,11 @@ using UnityEditor.Build.Reporting;
 
 public class BuildMenu : MonoBehaviour
 {
-    [MenuItem("Build/Build iOS")]
+    [MenuItem("Build/Build & Run iOS")]
     public static void iOSBuild()
     {
         BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
-        buildPlayerOptions.scenes = new[] { "Assets/Scenes/DanTest.unity"};
+        buildPlayerOptions.scenes = new[] { "Assets/Scenes/TestLevel.unity"};
         buildPlayerOptions.locationPathName = "Builds/iOSBuild";
         buildPlayerOptions.target = BuildTarget.iOS;
         buildPlayerOptions.options = BuildOptions.AutoRunPlayer;
@@ -29,11 +29,11 @@ public class BuildMenu : MonoBehaviour
         }
     }
 
-    [MenuItem("Build/Build Android")]
+    [MenuItem("Build/Build & Run Android")]
     public static void AndroidBuild()
     {
         BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
-        buildPlayerOptions.scenes = new[] { "Assets/Scenes/DanTest.unity" };
+        buildPlayerOptions.scenes = new[] { "Assets/Scenes/TestLevel.unity" };
         buildPlayerOptions.locationPathName = "Builds/AndroidBuild";
         buildPlayerOptions.target = BuildTarget.Android;
         buildPlayerOptions.options = BuildOptions.AutoRunPlayer;
