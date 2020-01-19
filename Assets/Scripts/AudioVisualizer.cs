@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeartAudioVisualizer : MonoBehaviour
+public class AudioVisualizer : MonoBehaviour
 {
     public AudioSource audioSource;
-    public float _maxScale = 1;
-    public float _minScale = 0.5f;
+    // public float _maxScale = 1;
+    // public float _minScale = 0.5f;
 
     float[] _samples = new float[512];
     float[] _freqBand = new float[8];
     float[] _bandBuffer = new float[8];
     float[] _bufferDecrease = new float[8];
     float[] _freqBandHeighest = new float[8];
-    public float[] _audioBand = new float[8];
+    // public float[] _audioBand = new float[8];
     public float[] _audioBandBuffer = new float[8];
 
     public int _bandIndex = 3;
@@ -34,11 +34,11 @@ public class HeartAudioVisualizer : MonoBehaviour
         BandBuffer();
         CreateAudioBands();
 
-        float spectrumRatio = _audioBandBuffer[_bandIndex] > 0 ? _audioBandBuffer[_bandIndex] / 2f : 0f;
+        // float spectrumRatio = _audioBandBuffer[_bandIndex] > 0 ? _audioBandBuffer[_bandIndex] / 2f : 0f;
 
-        float spectrumScale = Mathf.Lerp(_minScale, _maxScale, spectrumRatio);
+        // float spectrumScale = Mathf.Lerp(_minScale, _maxScale, spectrumRatio);
 
-        transform.localScale = new Vector3(spectrumScale, spectrumScale, spectrumScale);
+        // transform.localScale = new Vector3(spectrumScale, spectrumScale, spectrumScale);
 
     }
 
@@ -50,7 +50,7 @@ public class HeartAudioVisualizer : MonoBehaviour
             {
                 _freqBandHeighest[i] = _freqBand[i];
             }
-            _audioBand[i] = (_freqBand[i] / _freqBandHeighest[i]);
+            // _audioBand[i] = (_freqBand[i] / _freqBandHeighest[i]);
             _audioBandBuffer[i] = (_freqBand[i] / _freqBandHeighest[i]);
         }
     }
