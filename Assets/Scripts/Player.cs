@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    const float CURVEDURATION = .4f;
+
     // SuperParry is touch and hold
-	public float durationForSuperParry = 2f;
+    public float durationForSuperParry = 2f;
 
     public static Player Current { get; private set; }
     public bool IsParrying { get => isParrying; }
@@ -20,6 +22,11 @@ public class Player : MonoBehaviour
     private float touchduration;
     private Vector2 swipeDirection;
     private bool superParry = false;
+    private AnimationCurve xCurve;
+    private AnimationCurve yCurve;
+    private float startAnimTime;
+    private float currAnimTime;
+    private bool parryStarted = false;
 
     private bool mouseDown = false;
 
@@ -37,38 +44,48 @@ public class Player : MonoBehaviour
 
             switch (touch.phase)
             {
-				case TouchPhase.Began:
-					touchStartPosition = touch.position;
-					touchStartTime = Time.time;
-					break;
+                case TouchPhase.Began:
+                    touchStartPosition = touch.position;
+                    touchStartTime = Time.time;
+                    break;
 
                 case TouchPhase.Ended:
-                    touchEndPosition = touch.position;
-                    swipeDirection = (touchEndPosition - touchStartPosition).normalized;
-
-					isParrying = true;
-					if (Time.time - touchStartTime > durationForSuperParry)
-					{
-						superParry = true;
-						Debug.Log("Super Parry!");
-					}
-					else
+                    if (!isParrying)
                     {
-						Debug.Log("Parry!");
+                        isParrying = true;
+                        touchEndPosition = touch.position;
+                        swipeDirection = (touchEndPosition - touchStartPosition).normalized;
+
+
+                        if (Time.time - touchStartTime > durationForSuperParry)
+                        {
+                            superParry = true;
+                            Debug.Log("Super Parry!");
+                        }
+                        else
+                        {
+                            Debug.Log("Parry!");
+                        }
+
+                        StartCoroutine("Parry");
                     }
-					StartCoroutine("Parry");
-					break;
+                    break;
             }
         }
 
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetMouseButtonDown(0))
         {
-            //Same as TouchPhase.Ended, but start is the center of the object
             touchStartTime = Time.time;
             mouseDown = true;
+        }
+
+        if (Input.GetMouseButtonUp(0) && !isParrying)
+        {
+            //Same as TouchPhase.Ended, but start is the center of the object
+            mouseDown = false;
             touchStartPosition = transform.position;
-			touchEndPosition = Input.mousePosition;
-			swipeDirection = (touchEndPosition - touchStartPosition).normalized;
+            touchEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            swipeDirection = (touchEndPosition - touchStartPosition).normalized;
             isParrying = true;
             if (Time.time - touchStartTime > durationForSuperParry)
                 superParry = true;
@@ -78,24 +95,50 @@ public class Player : MonoBehaviour
 
     IEnumerator Parry()
     {
-		if (!this.anim.IsPlaying("parry"))
-		{
-			
-			if (!superParry)
-			{
-				transform.up = new Vector3(swipeDirection.x, swipeDirection.y, 0);
-				this.anim.Play();
-			}
-		}
-
-        while (this.anim.isPlaying)
+        if (!superParry)
         {
-            yield return new WaitForEndOfFrame();
+            SetAnimCurves();
+            startAnimTime = Time.time;
+            Vector3 tempPos;
+            do
+            {
+                currAnimTime = Time.time - startAnimTime;
+                tempPos = transform.position;
+                tempPos.x = xCurve.Evaluate(currAnimTime);
+                tempPos.y = yCurve.Evaluate(currAnimTime);
+                transform.position = tempPos;
+                yield return new WaitForEndOfFrame();
+            }
+            while (currAnimTime < CURVEDURATION);
+        }
+        else
+        {
+            this.anim.Play();
+            while (this.anim.isPlaying)
+                yield return new WaitForEndOfFrame();
         }
 
-        transform.up = new Vector3(0, 1, 0);
-
         isParrying = false;
-		superParry = false;
-	}
+        superParry = false;
+  
+        yield return null;
+    }
+
+    void SetAnimCurves()
+    {
+        Keyframe[] keys;
+        keys = new Keyframe[3];
+        keys[0] = new Keyframe(0.0f, 0.0f);
+        keys[1] = new Keyframe(.2f, swipeDirection.x);
+        keys[2] = new Keyframe(CURVEDURATION, 0.0f);
+        xCurve = new AnimationCurve(keys);
+
+        // create a curve to move the GameObject and assign to the clip
+        keys[0] = new Keyframe(0.0f, 0.0f);
+        keys[1] = new Keyframe(.2f, swipeDirection.y);
+        keys[2] = new Keyframe(CURVEDURATION, 0.0f);
+        yCurve = new AnimationCurve(keys);
+
+        Debug.Log("Anim curves set");
+    }
 }

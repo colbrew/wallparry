@@ -19,7 +19,7 @@ public class HeartBeat : MonoBehaviour
         if(currentTime < animationTime)
         {
             currentTime += Time.deltaTime;
-            Debug.Log("we here");
+            //Debug.Log("we here");
             float timePercent = currentTime/animationTime;
             float curvePercent = animationCurve.Evaluate(timePercent);
 
