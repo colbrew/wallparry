@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    const float CURVEATMAXHEIGHTTIME = .2f;
     const float CURVEDURATION = .4f;
-
+    
     public static Player Current { get; private set; }
 
     // SuperParry is touch and hold
@@ -55,6 +56,7 @@ public class Player : MonoBehaviour
         spriteRend = GetComponentInChildren<SpriteRenderer>();
         startColor = spriteRend.color;
         cam = Camera.main;
+        InitAnimCurves();
         Current = this;
     }
 
@@ -189,19 +191,28 @@ public class Player : MonoBehaviour
     }
 
     // these curves are used for the player movement when player parries
-    void SetAnimCurves()
+    void InitAnimCurves()
     {
         Keyframe[] keys;
+
+        // setup x curve
         keys = new Keyframe[3];
         keys[0] = new Keyframe(0.0f, 0.0f);
-        keys[1] = new Keyframe(.2f, swipeDirection.x);
+        keys[1] = new Keyframe(CURVEATMAXHEIGHTTIME, 0.0f);
         keys[2] = new Keyframe(CURVEDURATION, 0.0f);
         xCurve = new AnimationCurve(keys);
 
-        // create a curve to move the GameObject and assign to the clip
+        // setup y curve
         keys[0] = new Keyframe(0.0f, 0.0f);
-        keys[1] = new Keyframe(.2f, swipeDirection.y);
+        keys[1] = new Keyframe(CURVEATMAXHEIGHTTIME, 0.0f);
         keys[2] = new Keyframe(CURVEDURATION, 0.0f);
         yCurve = new AnimationCurve(keys);
+    }
+
+    // sets the middle key to direction player swiped
+    void SetAnimCurves()
+    {
+        xCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.x));
+        yCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.y));
     }
 }
