@@ -3,24 +3,14 @@ using UnityEngine;
 
 [RequireComponent(typeof(HeartBeat))]
 public class Player : MonoBehaviour
-{
-<<<<<<< HEAD
+{ 
+    public static Player Current { get; private set; }
+
     const float CURVEDURATION = .4f; // anim curve duration for player parry movement
-
-    public static Player Current { get; private set; }
-
-    
-    public float durationForSuperParry = 2f; // SuperParry is touch and hold
-=======
     const float CURVEATMAXHEIGHTTIME = .2f;
-    const float CURVEDURATION = .4f;
-    
-    public static Player Current { get; private set; }
 
-    // SuperParry is touch and hold
-    public float durationToChargeSuperParry = 2f;
+    public float durationToChargeSuperParry = 2f;     // SuperParry is touch and hold
     float chargedFlashRate = 1;
->>>>>>> d108f21c2dd2117fae91cba7f432906d7ba22639
 
     private Animation anim;
     private SpriteRenderer spriteRend;
