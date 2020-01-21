@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    const float CURVEDURATION = .4f;
+    const float CURVEDURATION = .4f; // anim curve duration for player parry movement
 
     public static Player Current { get; private set; }
 
-    // SuperParry is touch and hold
-    public float durationForSuperParry = 2f;
+    
+    public float durationForSuperParry = 2f; // SuperParry is touch and hold
 
     private Animation anim;
     private SpriteRenderer spriteRend;
