@@ -9,8 +9,8 @@ public class Player : MonoBehaviour
     const float CURVEDURATION = .4f; // anim curve duration for player parry movement
     const float CURVEATMAXHEIGHTTIME = .2f;
 
-    public float durationToChargeSuperParry = 2f;     // SuperParry is touch and hold
-    float chargedFlashRate = 1;
+    public float durationToChargeSuperParry = 2f; // SuperParry is touch and hold
+    float chargedFlashRate; // set by checking heart rate
 
     private Animation anim;
     private SpriteRenderer spriteRend;
@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     private bool isParrying = false;
     private Vector2 touchStartPosition;
     private Vector2 touchEndPosition;
-    private float touchStartTime;
+    private float touchStartTime = 0;
     private float touchduration;
     private Vector2 swipeDirection;
     private bool superParry = false;
@@ -91,7 +91,7 @@ public class Player : MonoBehaviour
                 case TouchPhase.Stationary:
                     if (!Pulsing)
                     {
-                        CheckForSuperParryReady();
+                        _ = CheckForSuperParryReady();
                     }
                     break;
 
@@ -120,7 +120,7 @@ public class Player : MonoBehaviour
         {
             if (!Pulsing)
             {
-                CheckForSuperParryReady();
+                _ = CheckForSuperParryReady();
             }
         }
 
@@ -137,14 +137,19 @@ public class Player : MonoBehaviour
     }
 
     bool CheckForSuperParryReady()
-    {
+    { 
         if (Time.time - touchStartTime > durationToChargeSuperParry)
         {
-            Pulsing = true;
+            if (!Pulsing)
+            {
+                Pulsing = true;
+            }
             return true;
         }
-
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     IEnumerator Parry()
@@ -183,12 +188,13 @@ public class Player : MonoBehaviour
     // player color pulsing when ready for super parry
     IEnumerator Pulse()
     {
-        while(hb.currentTime >= .01f)
+        while(hb.currentTime >= .1f) // so we start the pulsing at the beginning of a heartbeat anim
         {
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
+
         float pulsingStart = Time.time;
-        Debug.Log("Ready for super parry");
+
         while (Pulsing)
         {
             float o = (Mathf.Sin((Time.time - pulsingStart)*chargedFlashRate) + 1)/2;

@@ -917,7 +917,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  enterDelay: 0
+  enterDelay: 0.75
   exitDelay: 0
   duration: 0.5
   startOffscreen: 1
