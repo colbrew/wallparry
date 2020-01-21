@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(HeartBeat))]
 public class Player : MonoBehaviour
 {
     const float CURVEATMAXHEIGHTTIME = .2f;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
     private float currAnimTime;
     private bool pulsing = false;
     private Camera cam;
+    private HeartBeat hb;
 
     // Properties
     public bool IsParrying { get => isParrying; }
@@ -57,6 +59,7 @@ public class Player : MonoBehaviour
         spriteRend = GetComponentInChildren<SpriteRenderer>();
         startColor = spriteRend.color;
         cam = Camera.main;
+        hb = GetComponent<HeartBeat>();
         InitAnimCurves();
         Current = this;
     }
@@ -181,6 +184,10 @@ public class Player : MonoBehaviour
     // player color pulsing when ready for super parry
     IEnumerator Pulse()
     {
+        while(hb.currentTime >= .01f)
+        {
+            yield return null;
+        }
         float pulsingStart = Time.time;
         Debug.Log("Ready for super parry");
         while (Pulsing)

@@ -7,7 +7,7 @@ public class HeartBeat : MonoBehaviour
     public float maxScale;
     public float minScale;
     public float animationTime;
-    float currentTime;
+    public float currentTime;
     public AnimationCurve animationCurve;
 
     void Update()
