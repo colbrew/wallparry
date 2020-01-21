@@ -46,6 +46,7 @@ public class Level : MonoBehaviour
 		Current = this;
 		if(heartBeat != null)
 			heartBeat.SetAnimationTime(bpm);
+        Player.Current.SetChargedFlashRate(bpm);
 		difficultyLevels.Sort((a, b) => b.timePassed.CompareTo(a.timePassed));
 		foreach (var c in challenges)
 		{

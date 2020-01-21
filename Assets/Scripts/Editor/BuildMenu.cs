@@ -6,7 +6,7 @@ using UnityEditor.Build.Reporting;
 
 public class BuildMenu : MonoBehaviour
 {
-    [MenuItem("Build/Build & Run iOS")]
+    [MenuItem("Build/Build and Run iOS")]
     public static void iOSBuild()
     {
         BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
@@ -29,7 +29,7 @@ public class BuildMenu : MonoBehaviour
         }
     }
 
-    [MenuItem("Build/Build & Run Android")]
+    [MenuItem("Build/Build and Run Android")]
     public static void AndroidBuild()
     {
         BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();

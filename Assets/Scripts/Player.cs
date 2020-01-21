@@ -1,14 +1,26 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(HeartBeat))]
 public class Player : MonoBehaviour
 {
+<<<<<<< HEAD
     const float CURVEDURATION = .4f; // anim curve duration for player parry movement
 
     public static Player Current { get; private set; }
 
     
     public float durationForSuperParry = 2f; // SuperParry is touch and hold
+=======
+    const float CURVEATMAXHEIGHTTIME = .2f;
+    const float CURVEDURATION = .4f;
+    
+    public static Player Current { get; private set; }
+
+    // SuperParry is touch and hold
+    public float durationToChargeSuperParry = 2f;
+    float chargedFlashRate = 1;
+>>>>>>> d108f21c2dd2117fae91cba7f432906d7ba22639
 
     private Animation anim;
     private SpriteRenderer spriteRend;
@@ -27,15 +39,16 @@ public class Player : MonoBehaviour
     private float currAnimTime;
     private bool pulsing = false;
     private Camera cam;
+    private HeartBeat hb;
 
     // Properties
     public bool IsParrying { get => isParrying; }
     public Vector2 SwipeDirection { get => swipeDirection; }
     public bool SuperParry { get => superParry; }
-    private bool Pulsing
+    public bool Pulsing
     {
         get => pulsing;
-        set
+        private set
         {
             pulsing = value;
             if (pulsing)
@@ -55,6 +68,8 @@ public class Player : MonoBehaviour
         spriteRend = GetComponentInChildren<SpriteRenderer>();
         startColor = spriteRend.color;
         cam = Camera.main;
+        hb = GetComponent<HeartBeat>();
+        InitAnimCurves();
         Current = this;
     }
 
@@ -133,7 +148,7 @@ public class Player : MonoBehaviour
 
     bool CheckForSuperParryReady()
     {
-        if (Time.time - touchStartTime > durationForSuperParry)
+        if (Time.time - touchStartTime > durationToChargeSuperParry)
         {
             Pulsing = true;
             return true;
@@ -178,30 +193,48 @@ public class Player : MonoBehaviour
     // player color pulsing when ready for super parry
     IEnumerator Pulse()
     {
+        while(hb.currentTime >= .01f)
+        {
+            yield return null;
+        }
         float pulsingStart = Time.time;
         Debug.Log("Ready for super parry");
         while (Pulsing)
         {
-            float o = Mathf.PingPong(Time.time - pulsingStart, 1);
+            float o = (Mathf.Sin((Time.time - pulsingStart)*chargedFlashRate) + 1)/2;
             spriteRend.color = Color.Lerp(startColor, new Color(1f, .8f, .2f), o);
             yield return new WaitForEndOfFrame();
         }
     }
 
     // these curves are used for the player movement when player parries
-    void SetAnimCurves()
+    void InitAnimCurves()
     {
         Keyframe[] keys;
+
+        // setup x curve
         keys = new Keyframe[3];
         keys[0] = new Keyframe(0.0f, 0.0f);
-        keys[1] = new Keyframe(.2f, swipeDirection.x);
+        keys[1] = new Keyframe(CURVEATMAXHEIGHTTIME, 0.0f);
         keys[2] = new Keyframe(CURVEDURATION, 0.0f);
         xCurve = new AnimationCurve(keys);
 
-        // create a curve to move the GameObject and assign to the clip
+        // setup y curve
         keys[0] = new Keyframe(0.0f, 0.0f);
-        keys[1] = new Keyframe(.2f, swipeDirection.y);
+        keys[1] = new Keyframe(CURVEATMAXHEIGHTTIME, 0.0f);
         keys[2] = new Keyframe(CURVEDURATION, 0.0f);
         yCurve = new AnimationCurve(keys);
+    }
+
+    // sets the middle key to direction player swiped
+    void SetAnimCurves()
+    {
+        xCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.x));
+        yCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.y));
+    }
+
+    public void SetChargedFlashRate(float bpm)
+    {
+        chargedFlashRate = ((bpm / 60f) * 2 * Mathf.PI) / 2;
     }
 }

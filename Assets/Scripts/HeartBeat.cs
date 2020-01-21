@@ -7,27 +7,26 @@ public class HeartBeat : MonoBehaviour
     public float maxScale;
     public float minScale;
     public float animationTime;
-    float currentTime;
+    public float currentTime;
     public AnimationCurve animationCurve;
-
-    void Start()
-    {
-    }
 
     void Update()
     {
-        if(currentTime < animationTime)
+        if (currentTime < animationTime)
         {
             currentTime += Time.deltaTime;
-            //Debug.Log("we here");
-            float timePercent = currentTime/animationTime;
-            float curvePercent = animationCurve.Evaluate(timePercent);
-
-            float scale = Mathf.Lerp(minScale, maxScale, curvePercent);
-
-            transform.localScale = Vector3.one * scale;
+        }
+        else
+        {
+            currentTime = 0;
         }
 
+        float timePercent = currentTime / animationTime;
+        float curvePercent = animationCurve.Evaluate(timePercent);
+
+        float scale = Mathf.Lerp(minScale, maxScale, curvePercent);
+
+        transform.localScale = Vector3.one * scale;
     }
 
     public void AnimateBeat()
