@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     public static Player Current { get; private set; }
 
     // SuperParry is touch and hold
-    public float durationForSuperParry = 2f;
+    public float durationToChargeSuperParry = 2f;
 
     private Animation anim;
     private SpriteRenderer spriteRend;
@@ -33,10 +33,10 @@ public class Player : MonoBehaviour
     public bool IsParrying { get => isParrying; }
     public Vector2 SwipeDirection { get => swipeDirection; }
     public bool SuperParry { get => superParry; }
-    private bool Pulsing
+    public bool Pulsing
     {
         get => pulsing;
-        set
+        private set
         {
             pulsing = value;
             if (pulsing)
@@ -135,7 +135,7 @@ public class Player : MonoBehaviour
 
     bool CheckForSuperParryReady()
     {
-        if (Time.time - touchStartTime > durationForSuperParry)
+        if (Time.time - touchStartTime > durationToChargeSuperParry)
         {
             Pulsing = true;
             return true;
