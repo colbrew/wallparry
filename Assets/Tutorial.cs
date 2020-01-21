@@ -22,7 +22,7 @@ public class Tutorial : MonoBehaviour
     IEnumerator RunTutorial()
     {
         instructions[0].Enter();
-        while(!Player.Current.IsParrying)
+        while(!Player.Current.IsParrying || Player.Current.SuperParry)
         {
             yield return null;
         }
@@ -43,7 +43,7 @@ public class Tutorial : MonoBehaviour
         instructions[2].Exit();
         instructions[3].Exit();
         instructions[4].Enter();
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         instructions[4].Exit();
 
         yield return null;

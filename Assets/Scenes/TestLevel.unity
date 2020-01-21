@@ -1077,7 +1077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35dfc351d1cb5496d91068af3a1002cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heartBeat: {fileID: 0}
+  heartBeat: {fileID: 1413480159}
   difficultyLevels:
   - timePassed: 0
     easyWeight: 100
@@ -1583,6 +1583,18 @@ MonoBehaviour:
   endScale: {x: 0, y: 0, z: 0}
   startPos: {x: 0, y: 0, z: 0}
   endPos: {x: 0, y: 0, z: 0}
+--- !u!114 &1413480159 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4542113547542687095, guid: dafc8e0cedae1488bab4900de92af2d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 4542113547542687092}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ccf395847012d42b820ea77704ae56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1568262903
 GameObject:
   m_ObjectHideFlags: 0
@@ -1824,6 +1836,11 @@ PrefabInstance:
     - target: {fileID: 3914314316985864467, guid: dafc8e0cedae1488bab4900de92af2d9,
         type: 3}
       propertyPath: durationForSuperParry
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914314316985864467, guid: dafc8e0cedae1488bab4900de92af2d9,
+        type: 3}
+      propertyPath: chargedPulseRate
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4542113547542687094, guid: dafc8e0cedae1488bab4900de92af2d9,

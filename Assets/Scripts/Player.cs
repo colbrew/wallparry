@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
 
     // SuperParry is touch and hold
     public float durationToChargeSuperParry = 2f;
+    float chargedFlashRate = 1;
 
     private Animation anim;
     private SpriteRenderer spriteRend;
@@ -184,7 +185,7 @@ public class Player : MonoBehaviour
         Debug.Log("Ready for super parry");
         while (Pulsing)
         {
-            float o = Mathf.PingPong(Time.time - pulsingStart, 1);
+            float o = (Mathf.Sin((Time.time - pulsingStart)*chargedFlashRate) + 1)/2;
             spriteRend.color = Color.Lerp(startColor, new Color(1f, .8f, .2f), o);
             yield return new WaitForEndOfFrame();
         }
@@ -214,5 +215,10 @@ public class Player : MonoBehaviour
     {
         xCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.x));
         yCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.y));
+    }
+
+    public void SetChargedFlashRate(float bpm)
+    {
+        chargedFlashRate = ((bpm / 60f) * 2 * Mathf.PI) / 2;
     }
 }
