@@ -251,16 +251,15 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        // if player collides with a challenge wall, reverse movement to return to center
+        // if player collides with a challenge wall, reverse movement to return to center & shake camera
         if (collision.gameObject.tag == "ChallengeWall")
         {
-            StopCoroutine("Parry");
-           
-            if (transform.position == new Vector3(0,0,0)) // if player gets hit
-                this.GetComponent<ObjectShake>().Shake(.2f, .4f);
-            else // if player hits the challenge
+            if (IsParrying)
+            {
+                StopCoroutine("Parry");
                 Camera.main.GetComponent<ObjectShake>().Shake(.2f, .4f);
-            StartCoroutine("ReverseParry");
+                StartCoroutine("ReverseParry");
+            }
         }
     }
 
@@ -300,6 +299,7 @@ public class Player : MonoBehaviour
         numberOfLives -= 1;
         if (numberOfLives == 0)
             Level.Current.EndGame();
+        GetComponent<ObjectShake>().Shake(.2f, .4f);
     }
 
     public void RestartGame()

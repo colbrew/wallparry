@@ -1503,7 +1503,7 @@ MonoBehaviour:
   startupTime: 2
   beatDebugger: {fileID: 414942566}
   bpm: 130
-  tutorialOn: 0
+  tutorialOn: 1
   gameOverText: {fileID: 1491517791}
   gameActive: 1
 --- !u!4 &1011047551
