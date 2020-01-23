@@ -93,7 +93,8 @@ GameObject:
   - component: {fileID: 1121770717390904045}
   - component: {fileID: 1121770717390904044}
   m_Layer: 0
-  m_Name: Challenge_WallParent(all other walls are variants)
+  m_Name: Challenge_WallOriginal(all other walls are variants, make structural changes
+    to this one)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,10 +129,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 3
   hitWindowMin: 0
-  hitWindowMax: 1
+  hitWindowMax: 0.99
   difficulty: 0
   fadeOutTime: 0.25
   moveDirection: {x: -1, y: 0}
+  failColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!111 &1121770717390904044
 Animation:
   m_ObjectHideFlags: 0

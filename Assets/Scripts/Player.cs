@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(HeartBeat))]
 public class Player : MonoBehaviour
-{ 
+{
     public static Player Current { get; private set; }
 
     const float CURVEDURATION = .4f; // anim curve duration for player parry movement
@@ -14,6 +14,9 @@ public class Player : MonoBehaviour
 
     public float durationToChargeSuperParry = 2f; // SuperParry is touch and hold
     public float parryMagnitude = 1;
+    [Range(1,5)]
+    public int numberOfLives = 3;
+
     float chargedFlashRate; // set by checking heart rate
 
     private Animation anim;
@@ -68,6 +71,11 @@ public class Player : MonoBehaviour
         hb = GetComponent<HeartBeat>();
         InitAnimCurves();
         Current = this;
+    }
+
+    private void OnEnable()
+    {
+        Challenge.challengeFailed += LoseLife;
     }
 
     private void Update()
@@ -144,7 +152,7 @@ public class Player : MonoBehaviour
     }
 
     bool CheckForSuperParryReady()
-    { 
+    {
         if (Time.time - touchStartTime > durationToChargeSuperParry)
         {
             if (!Pulsing)
@@ -161,18 +169,22 @@ public class Player : MonoBehaviour
 
     IEnumerator Parry()
     {
-        parryEvent();
+
+
         if (CheckForSuperParryReady())
         {
             superParry = true;
             Pulsing = false;
+            parryEvent?.Invoke();
             this.anim.Play();
             while (this.anim.isPlaying)
                 yield return new WaitForEndOfFrame();
             superParry = false;
+           
         }
         else
         {
+            parryEvent?.Invoke();
             SetAnimCurves();
             startAnimTime = Time.time;
             Vector3 tempPos;
@@ -194,7 +206,7 @@ public class Player : MonoBehaviour
     // player color pulsing when ready for super parry
     IEnumerator Pulse()
     {
-        while(hb.currentTime >= .1f) // so we start the pulsing at the beginning of a heartbeat anim
+        while (hb.currentTime >= .1f) // so we start the pulsing at the beginning of a heartbeat anim
         {
             yield return new WaitForEndOfFrame();
         }
@@ -203,7 +215,7 @@ public class Player : MonoBehaviour
 
         while (Pulsing)
         {
-            float o = (Mathf.Sin((Time.time - pulsingStart)*chargedFlashRate) + 1)/2;
+            float o = (Mathf.Sin((Time.time - pulsingStart) * chargedFlashRate) + 1) / 2;
             spriteRend.color = Color.Lerp(startColor, new Color(1f, .8f, .2f), o);
             yield return new WaitForEndOfFrame();
         }
@@ -238,5 +250,12 @@ public class Player : MonoBehaviour
     public void SetChargedFlashRate(float bpm)
     {
         chargedFlashRate = ((bpm / 60f) * 2 * Mathf.PI) / 2;
+    }
+
+    void LoseLife()
+    {
+        numberOfLives -= 1;
+        if (numberOfLives == 0)
+            Level.Current.EndGame();
     }
 }

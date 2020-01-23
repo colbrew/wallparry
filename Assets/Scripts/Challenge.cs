@@ -31,14 +31,19 @@ public class Challenge : MonoBehaviour
     public float fadeOutTime = 0.25f;
     [Tooltip("Enter Vector for direction Challenge is moving i.e. (1,-1)")]
     public Vector2 moveDirection;
+    public Color failColor = Color.red;
 
     private Animation anim;
     private float startTime = 0;
     private State currState;
     bool parryProcessed = false;
     private float timePassed;
+    private SpriteRenderer sr;
 
     public float TimePassed { get => Time.time - startTime; }
+
+    public delegate void ChallengeFailed();
+    public static event ChallengeFailed challengeFailed;
 
     private void Awake()
     {
@@ -51,6 +56,7 @@ public class Challenge : MonoBehaviour
 
         startTime = Time.time;
         anim.Play();
+        sr = GetComponentInChildren<SpriteRenderer>();
 
         GameObject.Destroy(this.gameObject, duration + fadeOutTime);
     }
@@ -67,12 +73,13 @@ public class Challenge : MonoBehaviour
 
     private void Update()
     {
-        if (startTime > 0 && currState == State.Playing)
+        if (startTime > 0)
         {
-
-            if (TimePassed >= duration)
+            if (TimePassed >= duration && currState == State.Playing)
             {
-               currState = State.Failed;
+                currState = State.Failed;
+                challengeFailed?.Invoke();
+                StartCoroutine(ChallengeDie());
             }
         }
     }
@@ -81,17 +88,19 @@ public class Challenge : MonoBehaviour
     {
         if (hitWindowMin * duration <= TimePassed && TimePassed <= hitWindowMax * duration)
         {
+        
             Debug.Log("Move Direction: " + moveDirection.normalized +
             "Player direction: " + Player.Current.SwipeDirection +
             "Dot Product: " + Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection));
             // check if parry was on target
             if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) <= Player.Current.SWIPEACCRUACYLIMIT || Player.Current.SuperParry)
             {
+                currState = State.Success;
                 foreach (AnimationState state in anim)
                 {
                     state.speed *= -1.0f;
                 }
-                Debug.Log("Parry hit target");
+                Debug.Log("Parry hit target");          
             }
             else
             {
@@ -101,8 +110,16 @@ public class Challenge : MonoBehaviour
         }
     }
   
-    void ChallengeFailed()
+    IEnumerator ChallengeDie()
     {
-
+        float u = 0;
+        Color startColor = sr.color;
+        while(u < 1)
+        {
+            sr.color = Color.Lerp(startColor, failColor, u);
+            u += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        Destroy(gameObject);      
     }
 }

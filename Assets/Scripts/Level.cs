@@ -37,6 +37,7 @@ public class Level : MonoBehaviour
 	public Transform beatDebugger;
 	public float bpm = 120.0f;
     public bool tutorialOn = true;
+    public GameObject gameOverText;
 
 	private Dictionary<Challenge.Difficulty, List<Challenge>> challengesPerDifficulty = new Dictionary<Challenge.Difficulty, List<Challenge>>();
 
@@ -48,6 +49,7 @@ public class Level : MonoBehaviour
 		if(heartBeat != null)
 			heartBeat.SetAnimationTime(bpm);
         Player.Current.SetChargedFlashRate(bpm);
+        gameOverText.SetActive(false);
 		difficultyLevels.Sort((a, b) => b.timePassed.CompareTo(a.timePassed));
 		foreach (var c in challenges)
 		{
@@ -59,11 +61,10 @@ public class Level : MonoBehaviour
 
 	}
 
-	private void OnDestroy()
+    private void OnDestroy()
 	{
 		Current = null;
 	}
-
 
 	void Start()
 	{
@@ -130,5 +131,10 @@ public class Level : MonoBehaviour
 			}
 		}
 	}
+
+    public void EndGame()
+    {
+        gameOverText.SetActive(true);
+    }
 
 }
