@@ -36,7 +36,6 @@ public class Challenge : MonoBehaviour
     private Animation anim;
     private float startTime = 0;
     private State currState;
-    bool parryProcessed = false;
     private float timePassed;
     private SpriteRenderer sr;
 
@@ -104,7 +103,6 @@ public class Challenge : MonoBehaviour
             }
             else
             {
-                parryProcessed = false; //give them a chance to parry again
                 Debug.Log("Parry was off target!");
             }
         }

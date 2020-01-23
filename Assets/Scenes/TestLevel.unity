@@ -1122,7 +1122,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  enterDelay: 0.75
+  enterDelay: 0.2
   exitDelay: 0
   duration: 0.5
   startOffscreen: 1
@@ -2446,7 +2446,7 @@ PrefabInstance:
     - target: {fileID: 3914314316985864467, guid: dafc8e0cedae1488bab4900de92af2d9,
         type: 3}
       propertyPath: numberOfLives
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3914314316985864467, guid: dafc8e0cedae1488bab4900de92af2d9,
         type: 3}
