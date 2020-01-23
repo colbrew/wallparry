@@ -36,6 +36,7 @@ public class Level : MonoBehaviour
 	public float startupTime;
 	public Transform beatDebugger;
 	public float bpm = 120.0f;
+    public bool tutorialOn = true;
 
 	private Dictionary<Challenge.Difficulty, List<Challenge>> challengesPerDifficulty = new Dictionary<Challenge.Difficulty, List<Challenge>>();
 
@@ -64,13 +65,27 @@ public class Level : MonoBehaviour
 	}
 
 
-	IEnumerator Start()
+	void Start()
 	{
 		beatDebugger.gameObject.SetActive(false);
-		yield return new WaitForSeconds(startupTime);
-
-		startTime = Time.time;
+        if (!tutorialOn)
+        {
+            StartGame();
+        }
 	}
+
+    public void StartGame()
+    {
+        StartCoroutine("GameStart");
+    }
+
+    IEnumerator GameStart()
+    {
+        yield return new WaitForSeconds(startupTime);
+
+        startTime = Time.time;
+    }
+
 
 	int previousEightNote = 0;
 
@@ -111,7 +126,7 @@ public class Level : MonoBehaviour
 
 				var lst = challengesPerDifficulty[difficulty];
 				GameObject.Instantiate<Challenge>(lst[Random.Range(0, lst.Count)], this.transform);
-				Debug.Log("SPAWN AT: " + (Time.time - startTime).ToString());
+				//Debug.Log("SPAWN AT: " + (Time.time - startTime).ToString());
 			}
 		}
 	}

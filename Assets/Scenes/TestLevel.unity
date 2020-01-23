@@ -1085,17 +1085,14 @@ MonoBehaviour:
     hardWeight: 0
     challengesPerMeasure: 0.25
   challenges:
-  - {fileID: 1404352559615198588, guid: f65daddc57e1843258dc558059597544, type: 3}
-  - {fileID: 8762921544821205930, guid: 85aa005c14ce4e746987ee1335b5e1ee, type: 3}
-  - {fileID: 6330424540082792786, guid: cee250ec7957b7b4d84f24ed90af0a30, type: 3}
-  - {fileID: 1404352559615198588, guid: 6d425943513d7486ea0e2d160071e6b6, type: 3}
-  - {fileID: 2906159112373582659, guid: ea15c94ff3a4bd946874f97c134e40aa, type: 3}
-  - {fileID: 4935242291463457696, guid: 5720a0072f1319a4c9c94621f251d256, type: 3}
-  - {fileID: 4908507477398624449, guid: 64a83ac674b15264da7cec6014e43f66, type: 3}
-  - {fileID: 5188355099318504560, guid: fa55d462c3512d148bf978420218e37f, type: 3}
+  - {fileID: 2556733946299720010, guid: abe29534ed26bae4dab922c6c62fba8f, type: 3}
+  - {fileID: 5504971439217032662, guid: b5b4d77ace30c164989e8ee4000c40f4, type: 3}
+  - {fileID: 1070289238331261563, guid: 7e5c5d9a154fa4445b926e36b387fd6e, type: 3}
+  - {fileID: 2471860712494134727, guid: c524d64fb5450dc4692aa650fcb5761f, type: 3}
   startupTime: 2
   beatDebugger: {fileID: 414942566}
-  bpm: 120
+  bpm: 130
+  tutorialOn: 0
 --- !u!4 &1011047551
 Transform:
   m_ObjectHideFlags: 0
@@ -1852,7 +1849,17 @@ PrefabInstance:
     - target: {fileID: 3914314316985864467, guid: dafc8e0cedae1488bab4900de92af2d9,
         type: 3}
       propertyPath: durationToChargeSuperParry
-      value: 1.5
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914314316985864467, guid: dafc8e0cedae1488bab4900de92af2d9,
+        type: 3}
+      propertyPath: swipeMagnitude
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914314316985864467, guid: dafc8e0cedae1488bab4900de92af2d9,
+        type: 3}
+      propertyPath: parryMagnitude
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4542113547542687094, guid: dafc8e0cedae1488bab4900de92af2d9,
         type: 3}
@@ -1860,6 +1867,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8213894458310946910, guid: a68d5e0b46b604de490a34d72190d717,
         type: 2}
+    - target: {fileID: 4542113547542687094, guid: dafc8e0cedae1488bab4900de92af2d9,
+        type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5623685124877311807, guid: dafc8e0cedae1488bab4900de92af2d9,
         type: 3}
       propertyPath: m_LocalPosition.x

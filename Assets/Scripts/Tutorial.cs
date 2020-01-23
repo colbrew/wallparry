@@ -46,6 +46,8 @@ public class Tutorial : MonoBehaviour
         yield return new WaitForSeconds(3);
         instructions[4].Exit();
 
+        Level.Current.StartGame();
+
         yield return null;
     }
 }

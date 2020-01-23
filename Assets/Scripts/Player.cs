@@ -8,8 +8,12 @@ public class Player : MonoBehaviour
 
     const float CURVEDURATION = .4f; // anim curve duration for player parry movement
     const float CURVEATMAXHEIGHTTIME = .2f;
+    // for calculating if your swipe was accurate enough to parry
+    // an exactly correct swipe would be -1f, we want something between -1f (very hard/impossible) to -.75f (swipe in general right direciton)
+    public float SWIPEACCRUACYLIMIT = -.6f;
 
     public float durationToChargeSuperParry = 2f; // SuperParry is touch and hold
+    public float parryMagnitude = 1;
     float chargedFlashRate; // set by checking heart rate
 
     private Animation anim;
@@ -30,6 +34,9 @@ public class Player : MonoBehaviour
     private bool pulsing = false;
     private Camera cam;
     private HeartBeat hb;
+
+    public delegate void ParryEvent();
+    public static event ParryEvent parryEvent;
 
     // Properties
     public bool IsParrying { get => isParrying; }
@@ -154,11 +161,11 @@ public class Player : MonoBehaviour
 
     IEnumerator Parry()
     {
+        parryEvent();
         if (CheckForSuperParryReady())
         {
             superParry = true;
             Pulsing = false;
-            Debug.Log("Super Parry!");
             this.anim.Play();
             while (this.anim.isPlaying)
                 yield return new WaitForEndOfFrame();
@@ -166,7 +173,6 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Debug.Log("Parry!");
             SetAnimCurves();
             startAnimTime = Time.time;
             Vector3 tempPos;
@@ -225,8 +231,8 @@ public class Player : MonoBehaviour
     // sets the middle key to direction player swiped
     void SetAnimCurves()
     {
-        xCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.x));
-        yCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.y));
+        xCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.x * parryMagnitude));
+        yCurve.MoveKey(1, new Keyframe(CURVEATMAXHEIGHTTIME, swipeDirection.y * parryMagnitude));
     }
 
     public void SetChargedFlashRate(float bpm)

@@ -17,7 +17,10 @@ public class TutorialController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        tutorials[0].gameObject.SetActive(true);
+        if (Level.Current.tutorialOn)
+        {
+            tutorials[0].gameObject.SetActive(true);
+        }
     }
 
     // Update is called once per frame
