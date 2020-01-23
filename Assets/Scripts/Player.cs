@@ -203,6 +203,23 @@ public class Player : MonoBehaviour
         isParrying = false;
     }
 
+    IEnumerator ReverseParry()
+    {
+        Vector3 tempPos;
+        do
+        {
+            currAnimTime -= Time.deltaTime;
+            tempPos = transform.position;
+            tempPos.x = xCurve.Evaluate(currAnimTime);
+            tempPos.y = yCurve.Evaluate(currAnimTime);
+            transform.position = tempPos;
+            yield return new WaitForEndOfFrame();
+        }
+        while (currAnimTime > 0);
+
+        isParrying = false;
+    }
+
     // player color pulsing when ready for super parry
     IEnumerator Pulse()
     {
@@ -218,6 +235,21 @@ public class Player : MonoBehaviour
             float o = (Mathf.Sin((Time.time - pulsingStart) * chargedFlashRate) + 1) / 2;
             spriteRend.color = Color.Lerp(startColor, new Color(1f, .8f, .2f), o);
             yield return new WaitForEndOfFrame();
+        }
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        // if player collides with a challenge wall, reverse movement to return to center
+        if (collision.gameObject.tag == "ChallengeWall")
+        {
+            StopCoroutine("Parry");
+           
+            if (transform.position == new Vector3(0,0,0)) // if player gets hit
+                this.GetComponent<ObjectShake>().Shake(.2f, .4f);
+            else // if player hits the challenge
+                Camera.main.GetComponent<ObjectShake>().Shake(.2f, .4f);
+            StartCoroutine("ReverseParry");
         }
     }
 

@@ -35,7 +35,7 @@ public class Challenge : MonoBehaviour
 
     private Animation anim;
     private float startTime = 0;
-    private State currState;
+    public State currState;
     private float timePassed;
     private SpriteRenderer sr;
 
