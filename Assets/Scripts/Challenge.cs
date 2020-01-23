@@ -28,7 +28,9 @@ public class Challenge : MonoBehaviour
 	const float SWIPEACCRUACYLIMIT = -.87f; 
 
 	public float duration = 1.0f;
+    [Range(0.0f,1.0f)]
 	public float hitWindowMin = 0.75f;
+    [Range(0.0f, 1.0f)]
 	public float hitWindowMax = 0.9f;
 	public Difficulty difficulty;
 	public float fadeOutTime = 0.25f;
@@ -40,7 +42,7 @@ public class Challenge : MonoBehaviour
 	private State currState;
 
 	private void Awake()
-	{
+	{ 
 		currState = State.Playing;
 		anim = this.GetComponent<Animation>();
 		foreach (AnimationState state in anim)
@@ -53,7 +55,6 @@ public class Challenge : MonoBehaviour
 
 		GameObject.Destroy(this.gameObject, duration + fadeOutTime);
 	}
-
 
 	private void Update()
 	{
@@ -73,8 +74,11 @@ public class Challenge : MonoBehaviour
 				if (isParrying)
 				{
 					currState = State.Parrying;
-					if (hitWindowMin <= timePassed && timePassed <= hitWindowMax)
+					if (hitWindowMin * duration <= timePassed && timePassed <= hitWindowMax * duration)
 					{
+                        /*Debug.Log("Move Direction: " + moveDirection.normalized +
+                        "/nPlayer direction: " +Player.Current.SwipeDirection +
+                        "/nDot Product: " + Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection));*/
 						if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) <= SWIPEACCRUACYLIMIT || Player.Current.SuperParry)
 						{
 							currState = State.Success;

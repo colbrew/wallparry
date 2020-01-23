@@ -76,12 +76,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf978fe6ff774fd9b7c7260123b0060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 1
-  hitWindowMin: 0.5
+  duration: 3
+  hitWindowMin: 0.25
   hitWindowMax: 1
   difficulty: 0
   fadeOutTime: 0.25
-  moveDirection: {x: 1, y: 0}
+  moveDirection: {x: -1, y: 0}
 --- !u!111 &1404352559615198589
 Animation:
   m_ObjectHideFlags: 0
@@ -91,9 +91,9 @@ Animation:
   m_GameObject: {fileID: 1404352559615198586}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 9b7b517c98b3d454b9feefa370760967, type: 2}
+  m_Animation: {fileID: 7400000, guid: ac0cbbb0a85094344a986f110b4fbcae, type: 2}
   m_Animations:
-  - {fileID: 7400000, guid: 9b7b517c98b3d454b9feefa370760967, type: 2}
+  - {fileID: 7400000, guid: ac0cbbb0a85094344a986f110b4fbcae, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
