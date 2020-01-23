@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
     private Camera cam;
     private HeartBeat hb;
     private int startLives;
+    private ObjectShake cameraShake;
 
     public delegate void ParryEvent();
     public static event ParryEvent parryEvent;
@@ -72,6 +73,7 @@ public class Player : MonoBehaviour
         cam = Camera.main;
         hb = GetComponent<HeartBeat>();
         startLives = numberOfLives;
+        cameraShake = Camera.main.GetComponent<ObjectShake>();
         InitAnimCurves();
         Current = this;
     }
@@ -187,6 +189,7 @@ public class Player : MonoBehaviour
             superParry = true;
             Pulsing = false;
             parryEvent?.Invoke();
+            cameraShake.Shake(.4f, .5f);
             this.anim.Play();
             while (this.anim.isPlaying)
                 yield return new WaitForEndOfFrame();
@@ -254,10 +257,10 @@ public class Player : MonoBehaviour
         // if player collides with a challenge wall, reverse movement to return to center & shake camera
         if (collision.gameObject.tag == "ChallengeWall")
         {
-            if (IsParrying)
+            if (IsParrying && !superParry)
             {
                 StopCoroutine("Parry");
-                Camera.main.GetComponent<ObjectShake>().Shake(.2f, .4f);
+                cameraShake.Shake(.2f, .3f);
                 StartCoroutine("ReverseParry");
             }
         }
@@ -299,7 +302,7 @@ public class Player : MonoBehaviour
         numberOfLives -= 1;
         if (numberOfLives == 0)
             Level.Current.EndGame();
-        GetComponent<ObjectShake>().Shake(.2f, .4f);
+        GetComponent<ObjectShake>().Shake(.2f, .4f); // shake the player
     }
 
     public void RestartGame()
