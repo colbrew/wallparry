@@ -109,7 +109,7 @@ GameObject:
   m_Layer: 0
   m_Name: Challenge_WallOriginal(all other walls are variants, make structural changes
     to this one)
-  m_TagString: Untagged
+  m_TagString: ChallengeWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,6 +148,7 @@ MonoBehaviour:
   fadeOutTime: 0.25
   moveDirection: {x: -1, y: 0}
   failColor: {r: 1, g: 0, b: 0, a: 1}
+  currState: 0
 --- !u!111 &1121770717390904044
 Animation:
   m_ObjectHideFlags: 0

@@ -38,6 +38,7 @@ public class Level : MonoBehaviour
 	public float bpm = 120.0f;
     public bool tutorialOn = true;
     public GameObject gameOverText;
+	public bool gameActive = true;
 
 	private Dictionary<Challenge.Difficulty, List<Challenge>> challengesPerDifficulty = new Dictionary<Challenge.Difficulty, List<Challenge>>();
 
@@ -93,7 +94,7 @@ public class Level : MonoBehaviour
 	private void Update()
 	{
 		// Check every frame if a eight note has passed and try to spawn a challenge
-		if (startTime > 0)
+		if (startTime > 0 && gameActive)
 		{
 			float timePassed = Time.time - startTime;
 			int eightNote = Mathf.FloorToInt(timePassed / ((60.0f / bpm) / 8.0f) );
@@ -135,6 +136,20 @@ public class Level : MonoBehaviour
     public void EndGame()
     {
         gameOverText.SetActive(true);
+		gameActive = false;
+		Player.Current.paused = true;
+		GameObject[] remainingChallenges = GameObject.FindGameObjectsWithTag("ChallengeWall");
+		foreach (GameObject go in remainingChallenges)
+
+			Destroy(go);
+    }
+
+    public void RestartGame()
+    {
+		gameOverText.SetActive(false);
+		gameActive = true;
+		Player.Current.RestartGame();
+		LivesUI.Current.InitHearts();      
     }
 
 }

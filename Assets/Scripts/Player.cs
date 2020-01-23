@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     public float parryMagnitude = 1;
     [Range(1,5)]
     public int numberOfLives = 3;
+    public bool paused = false;
 
     float chargedFlashRate; // set by checking heart rate
 
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
     private bool pulsing = false;
     private Camera cam;
     private HeartBeat hb;
+    private int startLives;
 
     public delegate void ParryEvent();
     public static event ParryEvent parryEvent;
@@ -69,6 +71,7 @@ public class Player : MonoBehaviour
         startColor = spriteRend.color;
         cam = Camera.main;
         hb = GetComponent<HeartBeat>();
+        startLives = numberOfLives;
         InitAnimCurves();
         Current = this;
     }
@@ -78,15 +81,23 @@ public class Player : MonoBehaviour
         Challenge.challengeFailed += LoseLife;
     }
 
+    private void OnDisable()
+    {
+        Challenge.challengeFailed -= LoseLife;
+    }
+
     private void Update()
     {
+        if (!paused)
+        {
 #if UNITY_IOS || UNITY_ANDROID
-        CheckForTouchInput();
+            CheckForTouchInput();
 #endif
 
 #if UNITY_EDITOR || UNITY_STANDALONE
-        CheckForMouseInput();
+            CheckForMouseInput();
 #endif
+        }
     }
 
     void CheckForTouchInput()
@@ -289,5 +300,11 @@ public class Player : MonoBehaviour
         numberOfLives -= 1;
         if (numberOfLives == 0)
             Level.Current.EndGame();
+    }
+
+    public void RestartGame()
+    {
+        paused = false;
+        numberOfLives = startLives;
     }
 }
