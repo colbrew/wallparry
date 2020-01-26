@@ -83,31 +83,38 @@ public class Challenge : MonoBehaviour
         }
     }
 
-    void CheckForHit()
+    public void CheckForHit(Player.numWallsParried numWallsParried)
     {
         if (hitWindowMin * duration <= TimePassed && TimePassed <= hitWindowMax * duration)
         {
-        
-            Debug.Log("Move Direction: " + moveDirection.normalized +
-            "Player direction: " + Player.Current.SwipeDirection +
-            "Dot Product: " + Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection));
-            // check if parry was on target
-            if (Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) <= Player.Current.SWIPEACCRUACYLIMIT || Player.Current.SuperParry)
+            if (numWallsParried == Player.numWallsParried.allWalls)
             {
-                currState = State.Success;
-                foreach (AnimationState state in anim)
-                {
-                    state.speed *= -1.0f;
-                }
-                Debug.Log("Parry hit target");          
-            }
-            else
-            {
-                Debug.Log("Parry was off target!");
+                IveBeenHit();
             }
         }
     }
-  
+
+    public void IveBeenHit()
+    {
+        currState = State.Success;
+        foreach (AnimationState state in anim)
+        {
+            state.speed *= -1.0f;
+        }
+        Debug.Log("Parry hit target");
+    }
+
+    float AccuracyOfHit()
+    {
+        Debug.Log("Move Direction: " + moveDirection.normalized +
+                  "Player direction: " + Player.Current.SwipeDirection +
+                  "Dot Product: " + Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection));
+
+        // range is 1 to -1, with -1 most on target and 1 least on target
+        return Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) * -1;
+    }
+
+    // makes wall change color and destroy itself when player fails to parry it away in time
     IEnumerator ChallengeDie()
     {
         float u = 0;

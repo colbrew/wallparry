@@ -41,8 +41,15 @@ public class Player : MonoBehaviour
     private int startLives;
     private ObjectShake cameraShake;
 
-    public delegate void ParryEvent();
+    // used to broadcast when player parry's walls
+    public delegate void ParryEvent(numWallsParried numWalls); //
     public static event ParryEvent parryEvent;
+
+    public enum numWallsParried
+    {
+        allWalls,
+        singleWall
+    }
 
     // Properties
     public bool IsParrying { get => isParrying; }
@@ -188,7 +195,7 @@ public class Player : MonoBehaviour
         {
             superParry = true;
             Pulsing = false;
-            parryEvent?.Invoke();
+            parryEvent?.Invoke(numWallsParried.allWalls);
             cameraShake.Shake(.4f, .5f);
             this.anim.Play();
             while (this.anim.isPlaying)
@@ -198,7 +205,6 @@ public class Player : MonoBehaviour
         }
         else
         {
-            parryEvent?.Invoke();
             SetAnimCurves();
             startAnimTime = Time.time;
             Vector3 tempPos;
@@ -261,6 +267,7 @@ public class Player : MonoBehaviour
             {
                 StopCoroutine("Parry");
                 cameraShake.Shake(.2f, .3f);
+                collision.gameObject.GetComponentInParent<Challenge>().IveBeenHit();
                 StartCoroutine("ReverseParry");
             }
         }
