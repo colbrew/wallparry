@@ -43,6 +43,7 @@ public class Level : MonoBehaviour
 	private Dictionary<Challenge.Difficulty, List<Challenge>> challengesPerDifficulty = new Dictionary<Challenge.Difficulty, List<Challenge>>();
 
 	private float startTime = -1.0f;
+	int previousEightNote = 0;
 
 	void Awake()
     {
@@ -70,9 +71,13 @@ public class Level : MonoBehaviour
 	void Start()
 	{
 		beatDebugger.gameObject.SetActive(false);
-        if (!tutorialOn)
+        if (tutorialOn)
         {
-            StartGame();
+			TutorialController.Instance.PlayTutorial();
+        }
+        else
+        {
+			StartGame();
         }
 	}
 
@@ -83,13 +88,13 @@ public class Level : MonoBehaviour
 
     IEnumerator GameStart()
     {
-        yield return new WaitForSeconds(startupTime);
+		AudioManager.Instance.PlayGameMusic();
+		HeartBeat.Instance.AnimateBeat();
 
-        startTime = Time.time;
+		yield return new WaitForSeconds(startupTime);
+
+		startTime = Time.time;
     }
-
-
-	int previousEightNote = 0;
 
 	private void Update()
 	{
@@ -138,9 +143,9 @@ public class Level : MonoBehaviour
         gameOverText.SetActive(true);
 		gameActive = false;
 		Player.Current.paused = true;
+		Player.Current.transform.position = Vector3.zero;
 		GameObject[] remainingChallenges = GameObject.FindGameObjectsWithTag("ChallengeWall");
 		foreach (GameObject go in remainingChallenges)
-
 			Destroy(go);
     }
 

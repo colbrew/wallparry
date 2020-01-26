@@ -63,12 +63,12 @@ public class Challenge : MonoBehaviour
 
     private void OnEnable()
     {
-        Player.parryEvent += CheckForHit;
+        Player.parryAllWallsEvent += ParryAllWalls;
     }
 
     private void OnDisable()
     {
-        Player.parryEvent -= CheckForHit;
+        Player.parryAllWallsEvent -= ParryAllWalls;
     }
 
     private void Update()
@@ -84,18 +84,17 @@ public class Challenge : MonoBehaviour
         }
     }
 
-    public void CheckForHit(Player.numWallsParried numWallsParried)
+    public void ParryAllWalls()
     {
-        if (hitWindowMin * duration <= TimePassed && TimePassed <= hitWindowMax * duration &&
-            numWallsParried == Player.numWallsParried.allWalls)
-        {
-            IveBeenHit(numWallsParried);
-        }
+            IveBeenHit(Player.numWallsParried.allWalls);
     }
 
     // returns number of points from the hit
     public void IveBeenHit(Player.numWallsParried numWallsParried)
     {
+        if (currState == State.Success || currState == State.Failed)
+            return;
+
         currState = State.Success;
         foreach (AnimationState state in anim)
         {

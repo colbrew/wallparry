@@ -46,6 +46,10 @@ public class Tutorial : MonoBehaviour
         yield return new WaitForSeconds(3);
         instructions[4].Exit();
 
+        AudioManager.Instance.StopTutorialMusic();
+        while (AudioManager.Instance.musicAudioSource.isPlaying)
+            yield return new WaitForEndOfFrame();
+
         Level.Current.StartGame();
 
         yield return null;

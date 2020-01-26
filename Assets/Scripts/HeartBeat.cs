@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class HeartBeat : MonoBehaviour
 {
+    public static HeartBeat Instance;
+
     public float maxScale;
     public float minScale;
     public float animationTime;
     public float currentTime;
     public AnimationCurve animationCurve;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Update()
     {

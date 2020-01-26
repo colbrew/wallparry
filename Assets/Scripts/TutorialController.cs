@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class TutorialController : MonoBehaviour
 {
+    public static TutorialController Instance;
+
     public Tutorial[] tutorials;
 
     private void Awake()
     {
+        Instance = this;
+
         foreach (Tutorial tutorial in tutorials)
         {
             tutorial.gameObject.SetActive(false);
@@ -15,17 +19,9 @@ public class TutorialController : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    public void PlayTutorial()
     {
-        if (Level.Current.tutorialOn)
-        {
             tutorials[0].gameObject.SetActive(true);
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+            AudioManager.Instance.PlayTutorialMusic();
     }
 }
