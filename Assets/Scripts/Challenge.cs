@@ -41,6 +41,8 @@ public class Challenge : MonoBehaviour
 
     public float TimePassed { get => Time.time - startTime; }
 
+    public SpriteAnimation spriteAnimation;
+
     public delegate void ChallengeFailed();
     public static event ChallengeFailed challengeFailed;
 
@@ -97,6 +99,7 @@ public class Challenge : MonoBehaviour
     public void IveBeenHit()
     {
         currState = State.Success;
+        if(spriteAnimation != null) spriteAnimation.PlayAnimation(0, 1/24f);
         foreach (AnimationState state in anim)
         {
             state.speed *= -1.0f;
