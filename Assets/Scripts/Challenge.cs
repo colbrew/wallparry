@@ -32,6 +32,7 @@ public class Challenge : MonoBehaviour
     [Tooltip("Enter Vector for direction Challenge is moving i.e. (1,-1)")]
     public Vector2 moveDirection;
     public Color failColor = Color.red;
+    public int pointsValue = 100;
 
     private Animation anim;
     private float startTime = 0;
@@ -64,12 +65,12 @@ public class Challenge : MonoBehaviour
 
     private void OnEnable()
     {
-        Player.parryEvent += CheckForHit;
+        Player.parryAllWallsEvent += ParryAllWalls;
     }
 
     private void OnDisable()
     {
-        Player.parryEvent -= CheckForHit;
+        Player.parryAllWallsEvent -= ParryAllWalls;
     }
 
     private void Update()
@@ -85,26 +86,38 @@ public class Challenge : MonoBehaviour
         }
     }
 
-    public void CheckForHit(Player.numWallsParried numWallsParried)
+    public void ParryAllWalls()
     {
-        if (hitWindowMin * duration <= TimePassed && TimePassed <= hitWindowMax * duration)
-        {
-            if (numWallsParried == Player.numWallsParried.allWalls)
-            {
-                IveBeenHit();
-            }
-        }
+            IveBeenHit(Player.numWallsParried.allWalls);
     }
 
-    public void IveBeenHit()
+    // returns number of points from the hit
+    public void IveBeenHit(Player.numWallsParried numWallsParried)
     {
+        if (currState == State.Success || currState == State.Failed)
+            return;
+
         currState = State.Success;
         if(spriteAnimation != null) spriteAnimation.PlayAnimation(0, 1/24f);
         foreach (AnimationState state in anim)
         {
             state.speed *= -1.0f;
         }
+
         Debug.Log("Parry hit target");
+
+        int points = 0;
+        if (numWallsParried == Player.numWallsParried.singleWall)
+        {
+            // points are currently affected by the accuracy of the hit
+            points = ((int)(pointsValue * AccuracyOfHit())) * 10;
+        }
+        else if (numWallsParried == Player.numWallsParried.allWalls)
+        {
+            points = pointsValue * 10;
+        }
+
+        Player.Current.AddPoints(points);
     }
 
     float AccuracyOfHit()
@@ -113,8 +126,11 @@ public class Challenge : MonoBehaviour
                   "Player direction: " + Player.Current.SwipeDirection +
                   "Dot Product: " + Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection));
 
-        // range is 1 to -1, with -1 most on target and 1 least on target
-        return Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) * -1;
+        float x = Mathf.Max((Vector2.Dot(moveDirection.normalized, Player.Current.SwipeDirection) * -1), 0);
+
+        x *= x * x * x; // this affects how quickly the points go down the more you are off target
+
+        return x;
     }
 
     // makes wall change color and destroy itself when player fails to parry it away in time
@@ -122,12 +138,12 @@ public class Challenge : MonoBehaviour
     {
         float u = 0;
         Color startColor = sr.color;
-        while(u < 1)
+        while (u < 1)
         {
             sr.color = Color.Lerp(startColor, failColor, u);
             u += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        Destroy(gameObject);      
+        Destroy(gameObject);
     }
 }

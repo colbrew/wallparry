@@ -6,11 +6,9 @@ public class Player : MonoBehaviour
 {
     public static Player Current { get; private set; }
 
-    const float CURVEDURATION = .4f; // anim curve duration for player parry movement
+    // parrying anim curve settings
+    const float CURVEDURATION = .4f; 
     const float CURVEATMAXHEIGHTTIME = .2f;
-    // for calculating if your swipe was accurate enough to parry
-    // an exactly correct swipe would be -1f, we want something between -1f (very hard/impossible) to -.75f (swipe in general right direciton)
-    public float SWIPEACCRUACYLIMIT = -.6f;
 
     public float durationToChargeSuperParry = 2f; // SuperParry is touch and hold
     public float parryMagnitude = 1;
@@ -40,10 +38,11 @@ public class Player : MonoBehaviour
     private HeartBeat hb;
     private int startLives;
     private ObjectShake cameraShake;
+    private int score = 0;
 
     // used to broadcast when player parry's walls
-    public delegate void ParryEvent(numWallsParried numWalls); //
-    public static event ParryEvent parryEvent;
+    public delegate void ParryAllWallsEvent();
+    public static event ParryAllWallsEvent parryAllWallsEvent;
 
     public enum numWallsParried
     {
@@ -71,6 +70,8 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    public int Score { get => score; set => score = value; }
 
     private void Awake()
     {
@@ -189,13 +190,11 @@ public class Player : MonoBehaviour
 
     IEnumerator Parry()
     {
-
-
         if (CheckForSuperParryReady())
         {
             superParry = true;
             Pulsing = false;
-            parryEvent?.Invoke(numWallsParried.allWalls);
+            parryAllWallsEvent?.Invoke();
             cameraShake.Shake(.4f, .5f);
             this.anim.Play();
             while (this.anim.isPlaying)
@@ -267,10 +266,16 @@ public class Player : MonoBehaviour
             {
                 StopCoroutine("Parry");
                 cameraShake.Shake(.2f, .3f);
-                collision.gameObject.GetComponentInParent<Challenge>().IveBeenHit();
+                collision.gameObject.GetComponentInParent<Challenge>().IveBeenHit(numWallsParried.singleWall);
                 StartCoroutine("ReverseParry");
             }
         }
+    }
+
+    public void AddPoints(int points)
+    {
+        score += points;
+        ScoreUI.Instance.AddPoints(points);
     }
 
     // these curves are used for the player movement when player parries
@@ -314,7 +319,9 @@ public class Player : MonoBehaviour
 
     public void RestartGame()
     {
+        transform.position = Vector3.zero;
         paused = false;
         numberOfLives = startLives;
+        score = 0;
     }
 }
