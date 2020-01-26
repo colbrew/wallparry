@@ -36,6 +36,7 @@ public class ScoreUI : MonoBehaviour
     public void InitNewGame()
     {
         scoreText.text = "0";
+        score = 0;
     }
 
     public void AddPoints(int points, bool scoreburst = true)
