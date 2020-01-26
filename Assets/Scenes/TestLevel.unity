@@ -1502,7 +1502,7 @@ MonoBehaviour:
   - {fileID: 2471860712494134727, guid: c524d64fb5450dc4692aa650fcb5761f, type: 3}
   startupTime: 2
   beatDebugger: {fileID: 414942566}
-  bpm: 130
+  bpm: 120
   tutorialOn: 1
   gameOverText: {fileID: 1491517791}
   gameActive: 1
@@ -2732,6 +2732,11 @@ PrefabInstance:
       propertyPath: Loop
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4542113547542687094, guid: dafc8e0cedae1488bab4900de92af2d9,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 03f77209e3aeb4bb090f5923213814d9, type: 3}
     - target: {fileID: 5623685124877311807, guid: dafc8e0cedae1488bab4900de92af2d9,
         type: 3}
       propertyPath: m_LocalPosition.x
