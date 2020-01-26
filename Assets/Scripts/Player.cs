@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     private HeartBeat hb;
     private int startLives;
     private ObjectShake cameraShake;
+    private int score = 0;
 
     // used to broadcast when player parry's walls
     public delegate void ParryEvent(numWallsParried numWalls); //
@@ -71,6 +72,8 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    public int Score { get => score; set => score = value; }
 
     private void Awake()
     {
@@ -267,10 +270,16 @@ public class Player : MonoBehaviour
             {
                 StopCoroutine("Parry");
                 cameraShake.Shake(.2f, .3f);
-                collision.gameObject.GetComponentInParent<Challenge>().IveBeenHit();
+                collision.gameObject.GetComponentInParent<Challenge>().IveBeenHit(numWallsParried.singleWall);
                 StartCoroutine("ReverseParry");
             }
         }
+    }
+
+    public void AddPoints(int points)
+    {
+        score += points;
+        ScoreUI.Instance.AddPoints(points);
     }
 
     // these curves are used for the player movement when player parries
@@ -314,7 +323,9 @@ public class Player : MonoBehaviour
 
     public void RestartGame()
     {
+        transform.position = Vector3.zero;
         paused = false;
         numberOfLives = startLives;
+        score = 0;
     }
 }

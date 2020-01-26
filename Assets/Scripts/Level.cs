@@ -149,7 +149,8 @@ public class Level : MonoBehaviour
 		gameOverText.SetActive(false);
 		gameActive = true;
 		Player.Current.RestartGame();
-		LivesUI.Current.InitHearts();      
+		LivesUI.Current.InitHearts();
+		ScoreUI.Instance.InitNewGame();
     }
 
 }
